@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Bhaskar N</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background: radial-gradient(circle at center, #1a001a, #000);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family: system-ui, Arial, sans-serif;
+  overflow:hidden;
+}
+
+.wrap{
+  width:min(700px, 92vw);
+  text-align:center;
+  position:relative;
+  z-index:5;
+}
+
+.panel{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius:22px;
+  padding:22px;
+  backdrop-filter: blur(10px);
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+#typing{
+  font-size:18px;
+  line-height:1.6;
+  min-height:120px;
+  white-space:pre-line;
+}
+
+.heart{
+  font-size:60px;
+  animation:pulse 1.4s infinite;
+  margin:10px 0;
+}
+@keyframes pulse{
+  0%{ transform:scale(1); }
+  50%{ transform:scale(1.2); }
+  100%{ transform:scale(1); }
+}
+
+.question{ display:none; margin-top:15px; }
+.question h2{ font-size:26px; }
+
+.btns{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin-top:10px;
+}
+
+button{
+  padding:14px 26px;
+  font-size:17px;
+  border:none;
+  border-radius:999px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+#yes{
+  background:linear-gradient(90deg,#ff0066,#ff66b2);
+  color:white;
+}
+
+#no{
+  background:white;
+  color:black;
+  position:relative;
+}
+
+#final{
+  display:none;
+  font-size:22px;
+  margin-top:15px;
+  animation:glow 2s infinite alternate;
+  white-space:pre-line;
+}
+
+@keyframes glow{
+  from{ text-shadow:0 0 10px #ff0066; }
+  to{ text-shadow:0 0 30px #ff66b2; }
+}
+
+/* Floating candles */
+.candle{
+  position:absolute;
+  bottom:-120px;
+  font-size:26px;
+  animation: floatUp linear forwards;
+}
+@keyframes floatUp{
+  to{
+    transform:translateY(-120vh) translateX(var(--drift));
+    opacity:0;
+  }
+}
+
+/* Fireworks */
+#fx{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  display:none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+
+<div class="wrap">
+  <div class="panel">
+
+    <div id="typing"></div>
+
+    <div class="heart">❤️</div>
+
+    <div class="question" id="question">
+      <h2>Bhaskar N… will you be my Valentine? 💘</h2>
+      <div class="btns">
+        <button id="yes">Yes 💗</button>
+        <button id="no">No 🙈</button>
+      </div>
+    </div>
+
+    <div id="final">
+YAYYYYY 🥹💞
+
+From today, you’re officially my Valentine.
+You’re my safe place + my favorite person.
+
+Now come here… you owe me a date 😌💘
+
+— Vidhya
+    </div>
+
+  </div>
+</div>
+
+<!-- Romantic Piano Music -->
+<audio id="bgm"
+src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5c2e3b9f8a.mp3?filename=romantic-piano-110597.mp3"
+loop>
+</audio>
+
+<script>
+// Typing Message
+var text =
+"Before you answer anything…\n\n" +
+"I just want you to know…\n\n" +
+"You make my world brighter.\n" +
+"You make my heart calmer.\n" +
+"And I really really like you 🥹💖\n\n" +
+"Okay… now answer honestly 😌";
+
+var i=0;
+function typeWriter(){
+  if(i<text.length){
+    document.getElementById("typing").textContent+=text.charAt(i);
+    i++;
+    setTimeout(typeWriter,40);
+  } else{
+    document.getElementById("question").style.display="block";
+  }
+}
+typeWriter();
+
+// Music
+var bgm=document.getElementById("bgm");
+document.body.addEventListener("click",function(){
+  bgm.volume=0.8;
+  bgm.play();
+},{once:true});
+
+// Floating candles
+function rand(min,max){ return Math.random()*(max-min)+min; }
+function spawnCandle(){
+  var c=document.createElement("div");
+  c.className="candle";
+  c.textContent="🕯️";
+  c.style.left=rand(0,100)+"vw";
+  c.style.animationDuration=rand(4,7)+"s";
+  c.style.setProperty("--drift",rand(-120,120)+"px");
+  document.body.appendChild(c);
+  setTimeout(function(){c.remove();},7000);
+}
+setInterval(function(){ if(Math.random()<0.7) spawnCandle(); },600);
+
+// NO button runs
+var no=document.getElementById("no");
+no.onclick=function(e){
+  e.preventDefault();
+  no.style.transform="translate("+rand(-100,100)+"px,"+rand(-40,40)+"px)";
+};
+
+// Fireworks
+var canvas=document.getElementById("fx");
+var ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function firework(){
+  canvas.style.display="block";
+  for(let i=0;i<50;i++){
+    let x=rand(0,canvas.width);
+    let y=rand(0,canvas.height/2);
+    ctx.fillStyle="hsl("+rand(0,360)+",100%,60%)";
+    ctx.beginPath();
+    ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fill();
+  }
+  setTimeout(()=>{canvas.style.display="none";},800);
+}
+
+document.getElementById("yes").onclick=function(){
+  document.getElementById("question").style.display="none";
+  document.getElementById("final").style.display="block";
+  firework();
+};
+</script>
+
+</body>
+</html>
